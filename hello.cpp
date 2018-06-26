@@ -1,3 +1,4 @@
+#include <fstream> // ifstream
 #include <iostream>
 #include <string>
 
@@ -6,14 +7,28 @@
 using namespace std;
 
 int main(){
-    cout << "Enter your name: ";
+    
     string s;
     cin >> s;
-    cout << "Enter your age: ";
+    
     int age;
     cin >> age;
 
     Player player(s, age);
+
+    ifstream file;
+    file.open("words.txt");
+
+    if (!file){
+        cerr << "Unable to open periodic table file";
+        std::exit(1); // throw exception here instead?
+    }
+
+    string word;
+
+    while(file >> word){
+        cout << word << endl;
+    }
 
     cout << "Hello, " << player.getName() << "! You are " << player.getAge() << " years old!" << endl;
 

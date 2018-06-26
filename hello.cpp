@@ -1,5 +1,8 @@
 #include <iostream>
 #include <string>
+
+#include "func.h"
+
 using namespace std;
 
 int main(){
@@ -9,7 +12,10 @@ int main(){
     cout << "Enter your age: ";
     int age;
     cin >> age;
-    cout << "Hello, " << s << "! You are " << age << " years old!" << endl;
+
+    Player player(s, age);
+
+    cout << "Hello, " << player.getName() << "! You are " << player.getAge() << " years old!" << endl;
 
     return 0;
 }

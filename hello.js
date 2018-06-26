@@ -1711,7 +1711,7 @@ var ASM_CONSTS = [];
 
 STATIC_BASE = GLOBAL_BASE;
 
-STATICTOP = STATIC_BASE + 23136;
+STATICTOP = STATIC_BASE + 23504;
 /* global initializers */  __ATINIT__.push({ func: function() { __GLOBAL__I_000101() } }, { func: function() { __GLOBAL__sub_I_iostream_cpp() } });
 
 
@@ -1720,7 +1720,7 @@ STATICTOP = STATIC_BASE + 23136;
 
 
 
-var STATIC_BUMP = 23136;
+var STATIC_BUMP = 23504;
 Module["STATIC_BASE"] = STATIC_BASE;
 Module["STATIC_BUMP"] = STATIC_BUMP;
 
@@ -1764,12 +1764,6 @@ function copyTempDouble(ptr) {
 // {{PRE_LIBRARY}}
 
 
-  function ___cxa_uncaught_exception() {
-      return !!__ZSt18uncaught_exceptionv.uncaught_exception;
-    }
-
-  
-  
   
   var EXCEPTIONS={last:0,caught:[],infos:{},deAdjust:function (adjusted) {
         if (!adjusted || EXCEPTIONS.infos[adjusted]) return adjusted;
@@ -1804,7 +1798,24 @@ function copyTempDouble(ptr) {
         if (!ptr) return;
         var info = EXCEPTIONS.infos[ptr];
         info.refcount = 0;
-      }};
+      }};function ___cxa_begin_catch(ptr) {
+      var info = EXCEPTIONS.infos[ptr];
+      if (info && !info.caught) {
+        info.caught = true;
+        __ZSt18uncaught_exceptionv.uncaught_exception--;
+      }
+      if (info) info.rethrown = false;
+      EXCEPTIONS.caught.push(ptr);
+      EXCEPTIONS.addRef(EXCEPTIONS.deAdjust(ptr));
+      return ptr;
+    }
+
+  function ___cxa_uncaught_exception() {
+      return !!__ZSt18uncaught_exceptionv.uncaught_exception;
+    }
+
+  
+  
   function ___resumeException(ptr) {
       if (!EXCEPTIONS.last) { EXCEPTIONS.last = ptr; }
       throw ptr + " - Exception catching is disabled, this exception cannot be caught. Compile with -s DISABLE_EXCEPTION_CATCHING=0 or DISABLE_EXCEPTION_CATCHING=2 to catch.";
@@ -5129,9 +5140,41 @@ function copyTempDouble(ptr) {
 
   function _pthread_cond_wait() { return 0; }
 
+  
+  var PTHREAD_SPECIFIC={};function _pthread_getspecific(key) {
+      return PTHREAD_SPECIFIC[key] || 0;
+    }
+
+  
+  var PTHREAD_SPECIFIC_NEXT_KEY=1;function _pthread_key_create(key, destructor) {
+      if (key == 0) {
+        return ERRNO_CODES.EINVAL;
+      }
+      HEAP32[((key)>>2)]=PTHREAD_SPECIFIC_NEXT_KEY;
+      // values start at 0
+      PTHREAD_SPECIFIC[PTHREAD_SPECIFIC_NEXT_KEY] = 0;
+      PTHREAD_SPECIFIC_NEXT_KEY++;
+      return 0;
+    }
+
    
 
    
+
+  function _pthread_once(ptr, func) {
+      if (!_pthread_once.seen) _pthread_once.seen = {};
+      if (ptr in _pthread_once.seen) return;
+      Module['dynCall_v'](func);
+      _pthread_once.seen[ptr] = 1;
+    }
+
+  function _pthread_setspecific(key, value) {
+      if (!(key in PTHREAD_SPECIFIC)) {
+        return ERRNO_CODES.EINVAL;
+      }
+      PTHREAD_SPECIFIC[key] = value;
+      return 0;
+    }
 
    
 
@@ -5559,9 +5602,9 @@ function nullFunc_viiiiii(x) { Module["printErr"]("Invalid function pointer call
 
 function nullFunc_viijii(x) { Module["printErr"]("Invalid function pointer called with signature 'viijii'. Perhaps this is an invalid value (e.g. caused by calling a virtual method on a NULL pointer)? Or calling a function with an incorrect type, which will fail? (it is worth building your source files with -Werror (warnings are errors), as warnings can indicate undefined behavior which can cause this)");  Module["printErr"]("Build with ASSERTIONS=2 for more info.");abort(x) }
 
-Module['wasmTableSize'] = 6818;
+Module['wasmTableSize'] = 7329;
 
-Module['wasmMaxTableSize'] = 6818;
+Module['wasmMaxTableSize'] = 7329;
 
 function invoke_ii(index,a1) {
   try {
@@ -5736,7 +5779,7 @@ function invoke_viijii(index,a1,a2,a3,a4,a5,a6) {
 
 Module.asmGlobalArg = {};
 
-Module.asmLibraryArg = { "abort": abort, "assert": assert, "enlargeMemory": enlargeMemory, "getTotalMemory": getTotalMemory, "abortOnCannotGrowMemory": abortOnCannotGrowMemory, "abortStackOverflow": abortStackOverflow, "nullFunc_ii": nullFunc_ii, "nullFunc_iii": nullFunc_iii, "nullFunc_iiii": nullFunc_iiii, "nullFunc_iiiii": nullFunc_iiiii, "nullFunc_iiiiid": nullFunc_iiiiid, "nullFunc_iiiiii": nullFunc_iiiiii, "nullFunc_iiiiiid": nullFunc_iiiiiid, "nullFunc_iiiiiii": nullFunc_iiiiiii, "nullFunc_iiiiiiii": nullFunc_iiiiiiii, "nullFunc_iiiiiiiii": nullFunc_iiiiiiiii, "nullFunc_iiiiij": nullFunc_iiiiij, "nullFunc_v": nullFunc_v, "nullFunc_vi": nullFunc_vi, "nullFunc_vii": nullFunc_vii, "nullFunc_viii": nullFunc_viii, "nullFunc_viiii": nullFunc_viiii, "nullFunc_viiiii": nullFunc_viiiii, "nullFunc_viiiiii": nullFunc_viiiiii, "nullFunc_viijii": nullFunc_viijii, "invoke_ii": invoke_ii, "invoke_iii": invoke_iii, "invoke_iiii": invoke_iiii, "invoke_iiiii": invoke_iiiii, "invoke_iiiiid": invoke_iiiiid, "invoke_iiiiii": invoke_iiiiii, "invoke_iiiiiid": invoke_iiiiiid, "invoke_iiiiiii": invoke_iiiiiii, "invoke_iiiiiiii": invoke_iiiiiiii, "invoke_iiiiiiiii": invoke_iiiiiiiii, "invoke_iiiiij": invoke_iiiiij, "invoke_v": invoke_v, "invoke_vi": invoke_vi, "invoke_vii": invoke_vii, "invoke_viii": invoke_viii, "invoke_viiii": invoke_viiii, "invoke_viiiii": invoke_viiiii, "invoke_viiiiii": invoke_viiiiii, "invoke_viijii": invoke_viijii, "___cxa_find_matching_catch": ___cxa_find_matching_catch, "___cxa_uncaught_exception": ___cxa_uncaught_exception, "___gxx_personality_v0": ___gxx_personality_v0, "___lock": ___lock, "___map_file": ___map_file, "___resumeException": ___resumeException, "___setErrNo": ___setErrNo, "___syscall140": ___syscall140, "___syscall145": ___syscall145, "___syscall146": ___syscall146, "___syscall54": ___syscall54, "___syscall6": ___syscall6, "___syscall91": ___syscall91, "___unlock": ___unlock, "__addDays": __addDays, "__arraySum": __arraySum, "__isLeapYear": __isLeapYear, "_abort": _abort, "_emscripten_memcpy_big": _emscripten_memcpy_big, "_getenv": _getenv, "_llvm_stackrestore": _llvm_stackrestore, "_llvm_stacksave": _llvm_stacksave, "_pthread_cond_wait": _pthread_cond_wait, "_strftime": _strftime, "_strftime_l": _strftime_l, "DYNAMICTOP_PTR": DYNAMICTOP_PTR, "tempDoublePtr": tempDoublePtr, "ABORT": ABORT, "STACKTOP": STACKTOP, "STACK_MAX": STACK_MAX };
+Module.asmLibraryArg = { "abort": abort, "assert": assert, "enlargeMemory": enlargeMemory, "getTotalMemory": getTotalMemory, "abortOnCannotGrowMemory": abortOnCannotGrowMemory, "abortStackOverflow": abortStackOverflow, "nullFunc_ii": nullFunc_ii, "nullFunc_iii": nullFunc_iii, "nullFunc_iiii": nullFunc_iiii, "nullFunc_iiiii": nullFunc_iiiii, "nullFunc_iiiiid": nullFunc_iiiiid, "nullFunc_iiiiii": nullFunc_iiiiii, "nullFunc_iiiiiid": nullFunc_iiiiiid, "nullFunc_iiiiiii": nullFunc_iiiiiii, "nullFunc_iiiiiiii": nullFunc_iiiiiiii, "nullFunc_iiiiiiiii": nullFunc_iiiiiiiii, "nullFunc_iiiiij": nullFunc_iiiiij, "nullFunc_v": nullFunc_v, "nullFunc_vi": nullFunc_vi, "nullFunc_vii": nullFunc_vii, "nullFunc_viii": nullFunc_viii, "nullFunc_viiii": nullFunc_viiii, "nullFunc_viiiii": nullFunc_viiiii, "nullFunc_viiiiii": nullFunc_viiiiii, "nullFunc_viijii": nullFunc_viijii, "invoke_ii": invoke_ii, "invoke_iii": invoke_iii, "invoke_iiii": invoke_iiii, "invoke_iiiii": invoke_iiiii, "invoke_iiiiid": invoke_iiiiid, "invoke_iiiiii": invoke_iiiiii, "invoke_iiiiiid": invoke_iiiiiid, "invoke_iiiiiii": invoke_iiiiiii, "invoke_iiiiiiii": invoke_iiiiiiii, "invoke_iiiiiiiii": invoke_iiiiiiiii, "invoke_iiiiij": invoke_iiiiij, "invoke_v": invoke_v, "invoke_vi": invoke_vi, "invoke_vii": invoke_vii, "invoke_viii": invoke_viii, "invoke_viiii": invoke_viiii, "invoke_viiiii": invoke_viiiii, "invoke_viiiiii": invoke_viiiiii, "invoke_viijii": invoke_viijii, "___cxa_begin_catch": ___cxa_begin_catch, "___cxa_find_matching_catch": ___cxa_find_matching_catch, "___cxa_uncaught_exception": ___cxa_uncaught_exception, "___gxx_personality_v0": ___gxx_personality_v0, "___lock": ___lock, "___map_file": ___map_file, "___resumeException": ___resumeException, "___setErrNo": ___setErrNo, "___syscall140": ___syscall140, "___syscall145": ___syscall145, "___syscall146": ___syscall146, "___syscall54": ___syscall54, "___syscall6": ___syscall6, "___syscall91": ___syscall91, "___unlock": ___unlock, "__addDays": __addDays, "__arraySum": __arraySum, "__isLeapYear": __isLeapYear, "_abort": _abort, "_emscripten_memcpy_big": _emscripten_memcpy_big, "_getenv": _getenv, "_llvm_stackrestore": _llvm_stackrestore, "_llvm_stacksave": _llvm_stacksave, "_pthread_cond_wait": _pthread_cond_wait, "_pthread_getspecific": _pthread_getspecific, "_pthread_key_create": _pthread_key_create, "_pthread_once": _pthread_once, "_pthread_setspecific": _pthread_setspecific, "_strftime": _strftime, "_strftime_l": _strftime_l, "DYNAMICTOP_PTR": DYNAMICTOP_PTR, "tempDoublePtr": tempDoublePtr, "ABORT": ABORT, "STACKTOP": STACKTOP, "STACK_MAX": STACK_MAX };
 // EMSCRIPTEN_START_ASM
 var asm =Module["asm"]// EMSCRIPTEN_END_ASM
 (Module.asmGlobalArg, Module.asmLibraryArg, buffer);
